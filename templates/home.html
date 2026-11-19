@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA</title>
+</head>
+<style>
+  /* Base Page Styling */
+  body {
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    margin: 20px;
+    background: #eef1f5;
+    color: #222;
+  }
+
+  h1 {
+    font-size: 28px;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    color: #111;
+  }
+
+  /* Tab Bar */
+  .tab-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    border-bottom: 2px solid #007bff;
+    background: transparent;
+  }
+
+  .tab-btn {
+    background: #dde3ea;
+    border: none;
+    border-radius: 8px 8px 0 0;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    color: #444;
+    transition: all 0.2s ease;
+  }
+
+  .tab-btn:hover {
+    background: #cbd4df;
+    color: #000;
+  }
+
+  .tab-btn.active {
+    background: #007bff;
+    color: #ffffff;
+    box-shadow: 0 -2px 8px rgba(0, 123, 255, 0.25);
+  }
+
+  /* Tab Content Panel */
+  .tab-content {
+    display: none;
+    padding: 24px;
+    background: #ffffff;
+    border: 1px solid #d6dce5;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    animation: fadeIn 0.25s ease-in-out;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .tab-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #333;
+  }
+
+  /* Player Card Grid */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 22px;
+  }
+
+  /* Individual Player Card (Sleek Dark Theme) */
+  .player-card {
+    background: linear-gradient(145deg, #141414, #050505);
+    border: 1px solid #2c2c2c;
+    border-top: 3px solid #f5c518;
+    /* Gold FIFA accent bar */
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .player-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
+    border-color: #f5c518;
+  }
+
+  /* Card Header */
+  .player-header {
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+  }
+
+  .player-header h4 {
+    margin: 0 0 4px 0;
+    font-size: 19px;
+    color: #f5c518;
+    /* Gold player name */
+    letter-spacing: 0.4px;
+  }
+
+  .player-header small {
+    color: #b0b0b0;
+    /* Readable light gray instead of dark #666 */
+    font-size: 12px;
+    display: block;
+  }
+
+  /* Mini-cards for each TD stat */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .stat-box {
+    background: #1c1c1c;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .stat-box:hover {
+    background: #262626;
+    border-color: #f5c518;
+  }
+
+  .stat-box span {
+    display: block;
+    color: #9ca3af;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .stat-box strong {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  /* Smooth Tab Fade Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+<body>
+    <h1>FIFA - PLAYERS</h1>
+
+    <!-- Tab Buttons -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="openTab(event, 'Tab1')">2020</button>
+      <button class="tab-btn" onclick="openTab(event, 'Tab2')">2019</button>
+      <button class="tab-btn" onclick="openTab(event, 'Tab3')">2018</button>
+      <button class="tab-btn" onclick="openTab(event, 'Tab4')">2017</button>
+      <button class="tab-btn" onclick="openTab(event, 'Tab5')">2016</button>
+      <button class="tab-btn" onclick="openTab(event, 'Tab6')">2015</button>
+      <!-- <button class="tab-btn" onclick="openTab(event, 'Tab7')">Summary</button> -->
+    </div>
+    
+    <!-- Tab Content Panels -->
+    <div id="Tab1" class="tab-content active">
+      <h3>2020 </h3>
+      <div class="cards-grid">
+        {% for row in data_20 %}
+        <div class="player-card">
+          <div class="player-header">
+            <h4>{{ row['short_name'] }}</h4>
+            <small>{{ row['long_name'] }} - {{ row['club'] }}</small>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-box"><span>Overall</span><strong>{{ row['overall'] }}</strong></div>
+            <div class="stat-box"><span>Potential</span><strong>{{ row['potential'] }}</strong></div>
+            <div class="stat-box"><span>Value (€)</span><strong>{{ row['value_eur'] }}</strong></div>
+            <div class="stat-box"><span>Wage (€)</span><strong>{{ row['wage_eur'] }}</strong></div>
+            <div class="stat-box"><span>Pace</span><strong>{{ row['pace'] }}</strong></div>
+            <div class="stat-box"><span>Shooting</span><strong>{{ row['shooting'] }}</strong></div>
+            <div class="stat-box"><span>Passing</span><strong>{{ row['passing'] }}</strong></div>
+            <div class="stat-box"><span>Dribbling</span><strong>{{ row['dribbling'] }}</strong></div>
+            <div class="stat-box"><span>Defending</span><strong>{{ row['defending'] }}</strong></div>
+            <div class="stat-box"><span>Physic</span><strong>{{ row['physic'] }}</strong></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div id="Tab2" class="tab-content">
+      <h3>2019 </h3>
+      <div class="cards-grid">
+        {% for row in data_19 %}
+        <div class="player-card">
+          <div class="player-header">
+            <h4>{{ row['short_name'] }}</h4>
+            <small>{{ row['long_name'] }} - {{ row['club'] }}</small>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-box"><span>Overall</span><strong>{{ row['overall'] }}</strong></div>
+            <div class="stat-box"><span>Potential</span><strong>{{ row['potential'] }}</strong></div>
+            <div class="stat-box"><span>Value (€)</span><strong>{{ row['value_eur'] }}</strong></div>
+            <div class="stat-box"><span>Wage (€)</span><strong>{{ row['wage_eur'] }}</strong></div>
+            <div class="stat-box"><span>Pace</span><strong>{{ row['pace'] }}</strong></div>
+            <div class="stat-box"><span>Shooting</span><strong>{{ row['shooting'] }}</strong></div>
+            <div class="stat-box"><span>Passing</span><strong>{{ row['passing'] }}</strong></div>
+            <div class="stat-box"><span>Dribbling</span><strong>{{ row['dribbling'] }}</strong></div>
+            <div class="stat-box"><span>Defending</span><strong>{{ row['defending'] }}</strong></div>
+            <div class="stat-box"><span>Physic</span><strong>{{ row['physic'] }}</strong></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div id="Tab3" class="tab-content">
+      <h3>2018 </h3>
+      <div class="cards-grid">
+        {% for row in data_18 %}
+        <div class="player-card">
+          <div class="player-header">
+            <h4>{{ row['short_name'] }}</h4>
+            <small>{{ row['long_name'] }} - {{ row['club'] }}</small>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-box"><span>Overall</span><strong>{{ row['overall'] }}</strong></div>
+            <div class="stat-box"><span>Potential</span><strong>{{ row['potential'] }}</strong></div>
+            <div class="stat-box"><span>Value (€)</span><strong>{{ row['value_eur'] }}</strong></div>
+            <div class="stat-box"><span>Wage (€)</span><strong>{{ row['wage_eur'] }}</strong></div>
+            <div class="stat-box"><span>Pace</span><strong>{{ row['pace'] }}</strong></div>
+            <div class="stat-box"><span>Shooting</span><strong>{{ row['shooting'] }}</strong></div>
+            <div class="stat-box"><span>Passing</span><strong>{{ row['passing'] }}</strong></div>
+            <div class="stat-box"><span>Dribbling</span><strong>{{ row['dribbling'] }}</strong></div>
+            <div class="stat-box"><span>Defending</span><strong>{{ row['defending'] }}</strong></div>
+            <div class="stat-box"><span>Physic</span><strong>{{ row['physic'] }}</strong></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <div id="Tab4" class="tab-content">
+      <h3>2017 </h3>
+      <div class="cards-grid">
+        {% for row in data_17 %}
+        <div class="player-card">
+          <div class="player-header">
+            <h4>{{ row['short_name'] }}</h4>
+            <small>{{ row['long_name'] }} - {{ row['club'] }}</small>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-box"><span>Overall</span><strong>{{ row['overall'] }}</strong></div>
+            <div class="stat-box"><span>Potential</span><strong>{{ row['potential'] }}</strong></div>
+            <div class="stat-box"><span>Value (€)</span><strong>{{ row['value_eur'] }}</strong></div>
+            <div class="stat-box"><span>Wage (€)</span><strong>{{ row['wage_eur'] }}</strong></div>
+            <div class="stat-box"><span>Pace</span><strong>{{ row['pace'] }}</strong></div>
+            <div class="stat-box"><span>Shooting</span><strong>{{ row['shooting'] }}</strong></div>
+            <div class="stat-box"><span>Passing</span><strong>{{ row['passing'] }}</strong></div>
+            <div class="stat-box"><span>Dribbling</span><strong>{{ row['dribbling'] }}</strong></div>
+            <div class="stat-box"><span>Defending</span><strong>{{ row['defending'] }}</strong></div>
+            <div class="stat-box"><span>Physic</span><strong>{{ row['physic'] }}</strong></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div id="Tab5" class="tab-content">
+      <h3>2016 </h3>
+      <div class="cards-grid">
+        {% for row in data_16 %}
+        <div class="player-card">
+          <div class="player-header">
+            <h4>{{ row['short_name'] }}</h4>
+            <small>{{ row['long_name'] }} - {{ row['club'] }}</small>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-box"><span>Overall</span><strong>{{ row['overall'] }}</strong></div>
+            <div class="stat-box"><span>Potential</span><strong>{{ row['potential'] }}</strong></div>
+            <div class="stat-box"><span>Value (€)</span><strong>{{ row['value_eur'] }}</strong></div>
+            <div class="stat-box"><span>Wage (€)</span><strong>{{ row['wage_eur'] }}</strong></div>
+            <div class="stat-box"><span>Pace</span><strong>{{ row['pace'] }}</strong></div>
+            <div class="stat-box"><span>Shooting</span><strong>{{ row['shooting'] }}</strong></div>
+            <div class="stat-box"><span>Passing</span><strong>{{ row['passing'] }}</strong></div>
+            <div class="stat-box"><span>Dribbling</span><strong>{{ row['dribbling'] }}</strong></div>
+            <div class="stat-box"><span>Defending</span><strong>{{ row['defending'] }}</strong></div>
+            <div class="stat-box"><span>Physic</span><strong>{{ row['physic'] }}</strong></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div id="Tab6" class="tab-content">
+      <h3>2015 </h3>
+      <div class="cards-grid">
+        {% for row in data_15 %}
+        <div class="player-card">
+          <div class="player-header">
+            <h4>{{ row['short_name'] }}</h4>
+            <small>{{ row['long_name'] }} - {{ row['club'] }}</small>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-box"><span>Overall</span><strong>{{ row['overall'] }}</strong></div>
+            <div class="stat-box"><span>Potential</span><strong>{{ row['potential'] }}</strong></div>
+            <div class="stat-box"><span>Value (€)</span><strong>{{ row['value_eur'] }}</strong></div>
+            <div class="stat-box"><span>Wage (€)</span><strong>{{ row['wage_eur'] }}</strong></div>
+            <div class="stat-box"><span>Pace</span><strong>{{ row['pace'] }}</strong></div>
+            <div class="stat-box"><span>Shooting</span><strong>{{ row['shooting'] }}</strong></div>
+            <div class="stat-box"><span>Passing</span><strong>{{ row['passing'] }}</strong></div>
+            <div class="stat-box"><span>Dribbling</span><strong>{{ row['dribbling'] }}</strong></div>
+            <div class="stat-box"><span>Defending</span><strong>{{ row['defending'] }}</strong></div>
+            <div class="stat-box"><span>Physic</span><strong>{{ row['physic'] }}</strong></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+</body>
+<script>
+  function openTab(event, tabId) {
+    // 1. Hide all tab content
+    const contents = document.querySelectorAll('.tab-content');
+    contents.forEach(content => content.classList.remove('active'));
+
+    // 2. Remove 'active' class from all buttons
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    // 3. Show the clicked tab's content and highlight the button
+    document.getElementById(tabId).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+</script>
+</html>
